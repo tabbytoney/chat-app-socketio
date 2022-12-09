@@ -5,6 +5,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
@@ -16,9 +17,59 @@ const Signup = () => {
   const [password, setPassword] = useState();
   const [pic, setPic] = useState();
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   const handleClick = () => setShow(!show);
-  const postDetails = (pics) => {};
+
+  const postDetails = (pics) => {
+    setLoading(true);
+    if (pics === undefined) {
+      toast({
+        title: 'Please select an image',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+      // setloading to false
+      return;
+    }
+
+    if (pics.type === 'image/jpeg' || pics.type === 'image/png') {
+      const data = new FormData();
+      data.append('file', pics);
+      data.append('upload_preset', 'chat-app-socketio');
+      data.append('cloud_name', 'dvgyppwpm');
+      fetch('https://api.cloudinary.com/v1_1/dvgyppwpm/image/upload', {
+        method: 'post',
+        body: data,
+      })
+        // whatever response we get, we're going to convert into json
+        .then((res) => res.json())
+        // then we'll take that json and set our pic state
+        .then((data) => {
+          setPic(data.url.toString());
+          console.log(data.url.toString());
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    } else {
+      toast({
+        title: 'Please select a jpeg or png image',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+      setLoading(false);
+      return;
+    }
+  };
+
   const submitHandler = () => {};
 
   return (
@@ -101,6 +152,7 @@ const Signup = () => {
         width='100%'
         style={{ marginTop: 15 }}
         onClick={submitHandler}
+        isLoading={loading}
       >
         Sign Up
       </Button>
