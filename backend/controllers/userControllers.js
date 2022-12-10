@@ -66,4 +66,34 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { registerUser, authUser };
+// how to search for users
+//  /api/user
+// can send info through the body with a post request with what we're looking for in the body with req.params or
+// can instead use queries - api/user?search=scout
+
+// Postman collection > Users/Auth > SearchUser to test
+const allUsers = asyncHandler(async (req, res) => {
+  // after the ? to see if there's a query
+  // $or is a mongo operator and means you need to fulfill either of these requests ' do this or that ' like a ternary
+  const keyword = req.query.search
+    ? {
+        // the below means we're searching inside of the name OR inside of the email
+        // the lowercase i means we want it to be case sensitive
+        // regex helps us match/filter the strings in mongodb - first part is the pattern, second part is options
+        // $ stuff is mongo
+        $or: [
+          { name: { $regex: req.query.search, $options: 'i' } },
+          { email: { $regex: req.query.search, $options: 'i' } },
+        ],
+      }
+    : // else part is below (in this case we aren't doing anything if nothing is found)
+      {};
+
+  // the ({_id:{ne: ... }}) is so we can search all of the users except the one logged in. ne = not equal
+  // we have to have the JWT token to be able to do this exception of current logged in user though. Can just leave it at .find() though
+  const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+  // return the info
+  res.send(users);
+});
+
+module.exports = { registerUser, authUser, allUsers };
