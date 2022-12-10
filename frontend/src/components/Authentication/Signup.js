@@ -9,6 +9,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 const Signup = () => {
   const [name, setName] = useState();
@@ -19,6 +21,8 @@ const Signup = () => {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+
+  const history = useHistory();
 
   const handleClick = () => setShow(!show);
 
@@ -32,7 +36,7 @@ const Signup = () => {
         isClosable: true,
         position: 'bottom',
       });
-      // setloading to false
+      setLoading(false);
       return;
     }
 
@@ -70,7 +74,73 @@ const Signup = () => {
     }
   };
 
-  const submitHandler = () => {};
+  const submitHandler = async () => {
+    setLoading(true);
+    if (!name || !email || !password || !confirmpassword) {
+      toast({
+        title: 'Please fill out all the fields',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+      setLoading(false);
+      return;
+    }
+    if (password !== confirmpassword) {
+      toast({
+        title: 'Passwords do not match',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+      setLoading(false);
+      return;
+    }
+
+    // if info is all there and passwords match, store in the db
+    try {
+      const config = {
+        headers: {
+          // try Content-type if this has a problem
+          'Content-Type': 'application/json',
+        },
+      };
+      const { data } = await axios.post(
+        '/api/user',
+        {
+          name,
+          email,
+          password,
+          pic,
+        },
+        config
+      );
+      toast({
+        title: 'Registration successful',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+      // add data to local storage
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      setLoading(false);
+      // if registration is successful, push the user to the chats page
+      history.push('/chats');
+    } catch (error) {
+      toast({
+        title: 'Error occurred',
+        description: error.response.data.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+      setLoading(false);
+    }
+  };
 
   return (
     <VStack spacing='5px'>
