@@ -5,10 +5,13 @@ const connectDB = require('./config/db');
 const colors = require('colors');
 const userRoutes = require('./routes/userRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+const chatRoutes = require('./routes/chatRoutes');
 
 dotenv.config();
 connectDB();
 const app = express();
+
+// created these apis
 
 // have to tell server to accept json from frontend (user info we get in userControllers.js)
 app.use(express.json());
@@ -21,6 +24,7 @@ app.get('/', (req, res) => {
 // user auth apis
 // app.use
 app.use('/api/user', userRoutes);
+app.use('/api/chat', chatRoutes);
 
 // error handling, errorMiddleware.js
 // if the request doesnt match any of the above, it'll trigger this not found and error handlers
