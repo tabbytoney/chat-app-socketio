@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import {
   Container,
   Box,
@@ -11,8 +11,22 @@ import {
 } from '@chakra-ui/react';
 import Login from '../components/Authentication/Login';
 import Signup from '../components/Authentication/Signup';
+import { useHistory } from 'react-router-dom';
 
 const Homepage = () => {
+  const history = useHistory();
+
+  // when we login, we store user info locally
+  useEffect(() => {
+    // fetch our local storage to see if user is logged in
+    const user = JSON.parse(localStorage.getItem('userInfo'));
+
+    // if user is logged in, push to chats
+    if (user) {
+      history.push('/chats');
+    }
+    // [history] = when history changes, this will run again
+  }, [history]);
   return (
     <Container maxW='xl' centerContent>
       <Box
