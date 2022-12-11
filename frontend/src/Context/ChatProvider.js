@@ -9,6 +9,10 @@ const ChatProvider = ({ children }) => {
   // Normally this would only be available inside the component it was created in.
   // But inside this context, this is available everywhere in our app - we add it to the value in the ChatContext.Prover
   const [user, setUser] = useState();
+  // select a particular chat
+  const [selectedChat, setSelectedChat] = useState();
+  // to populate all chats
+  const [chats, setChats] = useState([]);
 
   const history = useHistory();
 
@@ -25,7 +29,9 @@ const ChatProvider = ({ children }) => {
     // [history] = when history changes, this will run again
   }, [history]);
   return (
-    <ChatContext.Provider value={{ user, setUser }}>
+    <ChatContext.Provider
+      value={{ user, setUser, selectedChat, setSelectedChat, chats, setChats }}
+    >
       {children}
     </ChatContext.Provider>
   );
