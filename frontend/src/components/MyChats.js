@@ -8,6 +8,7 @@ import ChatLoading from './ChatLoading';
 import { Button } from '@chakra-ui/react';
 import { ChatState } from '../Context/ChatProvider';
 import { MdAdd } from 'react-icons/md';
+import GroupChatModal from './Misc/GroupChatModal';
 
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
@@ -68,14 +69,16 @@ const MyChats = ({ fetchAgain }) => {
         color='orange.900'
       >
         My Chats
-        <Button
-          display='flex'
-          fontSize={{ base: '17px', md: '10px', lg: '17px' }}
-          rightIcon={MdAdd}
-          colorScheme='orange'
-        >
-          New Group Chat
-        </Button>
+        <GroupChatModal>
+          <Button
+            display='flex'
+            fontSize={{ base: '17px', md: '10px', lg: '17px' }}
+            rightIcon={<MdAdd />}
+            colorScheme='orange'
+          >
+            New Group Chat
+          </Button>
+        </GroupChatModal>
       </Box>
       <Box
         display='flex'

@@ -196,7 +196,8 @@ const SideDrawer = () => {
                 mr={2}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                borderColor='orange.500'
+                borderColor='orange.300'
+                focusBorderColor='orange.500'
               />
               <Button colorScheme='orange' onClick={handleSearch}>
                 Go
