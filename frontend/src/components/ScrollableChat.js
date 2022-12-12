@@ -23,7 +23,7 @@ const ScrollableChat = ({ messages }) => {
               <Tooltip label={m.sender.name} placement='bottom-start' hasArrow>
                 <Avatar
                   mt='7px'
-                  mr={1}
+                  mr={-8}
                   size='sm'
                   cursor='pointer'
                   name={m.sender.name}
@@ -35,7 +35,7 @@ const ScrollableChat = ({ messages }) => {
               backgroundColor={`${
                 m.sender._id === user._id ? 'orange.400' : 'orange.200'
               }`}
-              ml={isSameSenderMargin(messages, m, i, user._id)}
+              ml='40px'
               mt='10px'
               borderRadius='20px'
               p={'5px 15px'}

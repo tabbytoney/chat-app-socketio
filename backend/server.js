@@ -50,6 +50,52 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(3000, console.log(`Server started on port ${PORT}`.yellow.bold));
+// socket io needs the 'const server' part
+const server = app.listen(
+  3000,
+  console.log(`Server started on port ${PORT}`.yellow.bold)
+);
+
+// CORS for FE app address to prevent cross origin errors
+const io = require('socket.io')(server, {
+  // will close the connection if zero activity in 60 second
+  pingTimeout: 60000,
+  cors: {
+    origin: 'http://localhost:3001',
+  },
+});
+//create a connection, each user needs their own connection (aka room)s
+io.on('connection', (socket) => {
+  console.log('Connected to socket.io');
+  socket.on('setup', (userData) => {
+    socket.join(userData._id);
+    socket.emit('connected');
+  });
+
+  // gets room id from the frontend
+  socket.on('join chat', (room) => {
+    socket.join(room);
+    console.log('User joined room: ' + room);
+  });
+  // socket.on('typing', (room) => socket.in(room).emit('typing'));
+  // socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
+
+  socket.on('new message', (newMessageRecieved) => {
+    let chat = newMessageRecieved.chat;
+
+    if (!chat.users) return console.log('chat.users not defined');
+    // in group chat, send message to each user (but not the person who sent it)
+    chat.users.forEach((user) => {
+      if (user._id == newMessageRecieved.sender._id) return;
+
+      socket.in(user._id).emit('message recieved', newMessageRecieved);
+    });
+  });
+
+  socket.off('setup', () => {
+    console.log('USER DISCONNECTED');
+    socket.leave(userData._id);
+  });
+});
 
 // to start server first time, in terminal: sudo node backend/server.js
