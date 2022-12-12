@@ -17,4 +17,4 @@ You can register, or use guest login. May need to refresh the page after you log
 
 ![image](https://user-images.githubusercontent.com/60009709/206949323-7b133114-ec39-4b53-bf46-e2bae4ec2233.png)
 
-![image](https://user-images.githubusercontent.com/60009709/206949293-66cd8408-aee6-4b08-a4e1-28bb96b90e7a.png)
+<img width="1728" alt="image" src="https://user-images.githubusercontent.com/60009709/207122429-085bd199-9d4f-4511-a477-ada778309ed0.png">
