@@ -45,6 +45,7 @@ const MyChats = ({ fetchAgain }) => {
     fetchChats();
     // eslint-disable-next-line
   }, [fetchAgain]);
+  // ^ this runs again to update the chats list whenever that change
 
   return (
     <Box
