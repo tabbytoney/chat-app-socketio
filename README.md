@@ -1,5 +1,5 @@
 # chat-app-socketio
- A realtime messaging app, using JavaScript, React, ChakraUI, Express, and SocketIO
+ A realtime messaging app, using JavaScript, React, ChakraUI, Express, MongoDb, and SocketIO
  
 # to run locally:
 In root app: npm i
