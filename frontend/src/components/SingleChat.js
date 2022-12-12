@@ -22,7 +22,7 @@ import ProfileModal from './Misc/ProfileModal';
 import UpdateGroupChatModal from './Misc/UpdateGroupChatModel';
 import { ChatState } from '../Context/ChatProvider';
 // const ENDPOINT = 'http://localhost:3000'; // "https://talk-a-tive.herokuapp.com"; -> After deployment
-// var socket, selectedChatCompare;
+// let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { user, selectedChat, setSelectedChat } = ChatState();
