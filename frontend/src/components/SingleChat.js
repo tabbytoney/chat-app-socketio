@@ -10,11 +10,11 @@ import {
 } from '@chakra-ui/react';
 import { MdArrowBack } from 'react-icons/md';
 import { getSender, getSenderFull } from '../config/ChatLogics';
-// import { useEffect, useState } from 'react';
-// import axios from 'axios';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import ProfileModal from './Misc/ProfileModal';
-// import ScrollableChat from './ScrollableChat';
+import ScrollableChat from './ScrollableChat';
 // import Lottie from 'react-lottie';
 // import animationData from '../animations/typing.json';
 
@@ -25,7 +25,117 @@ import { ChatState } from '../Context/ChatProvider';
 // let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [newMessage, setNewMessage] = useState('');
+  const [socketConnected, setSocketConnected] = useState(false);
+  // const [typing, setTyping] = useState(false);
+  // const [istyping, setIsTyping] = useState(false);
+  const toast = useToast();
   const { user, selectedChat, setSelectedChat } = ChatState();
+
+  const sendMessage = async (event) => {
+    if (event.key === 'Enter' && newMessage) {
+      //  socket.emit('stop typing', selectedChat._id);
+      try {
+        const config = {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        setNewMessage('');
+        // send message with the post api
+        const { data } = await axios.post(
+          '/api/message',
+          {
+            content: newMessage,
+            chatId: selectedChat,
+          },
+          config
+        );
+
+        console.log(data);
+        //  socket.emit('new message', data);
+
+        // add this new message to the array of all the messages
+        setMessages([...messages, data]);
+      } catch (error) {
+        toast({
+          title: 'Error occured!',
+          description: 'Failed to send the message',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+          position: 'bottom',
+        });
+      }
+    }
+  };
+
+  const typingHandler = (e) => {
+    setNewMessage(e.target.value);
+
+    // if (!socketConnected) return;
+
+    // if (!typing) {
+    //   setTyping(true);
+    //   socket.emit('typing', selectedChat._id);
+    // }
+    // let lastTypingTime = new Date().getTime();
+    // let timerLength = 3000;
+    // setTimeout(() => {
+    //   let timeNow = new Date().getTime();
+    //   let timeDiff = timeNow - lastTypingTime;
+    //   if (timeDiff >= timerLength && typing) {
+    //     socket.emit('stop typing', selectedChat._id);
+    //     setTyping(false);
+    //   }
+    // }, timerLength);
+  };
+
+  // get all messages
+  const fetchMessages = async () => {
+    if (!selectedChat) return;
+
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      setLoading(true);
+
+      // search for all messages from a particular chat
+      const { data } = await axios.get(
+        `/api/message/${selectedChat._id}`,
+        config
+      );
+      // console.log(data);
+      setMessages(data);
+      setLoading(false);
+
+      //  socket.emit('join chat', selectedChat._id);
+    } catch (error) {
+      toast({
+        title: 'Error occured!',
+        description: 'Failed to load the messages',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchMessages();
+
+    // selectedChatCompare = selectedChat;
+    // rerun and update this when the chat changes
+    // eslint-disable-next-line
+  }, [selectedChat]);
 
   return (
     <>
@@ -74,7 +184,43 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             borderRadius='lg'
             overflowY='hidden'
           >
-            Messages here
+            {loading ? (
+              <Spinner
+                size='xl'
+                w={20}
+                h={20}
+                alignSelf='center'
+                margin='auto'
+                color='orange.900'
+              />
+            ) : (
+              // Displaying the messages
+              <Box
+                className='messages'
+                display='flex'
+                flex-direction='column'
+                overflowY='scroll'
+              >
+                <ScrollableChat messages={messages} />
+              </Box>
+            )}
+            <FormControl
+              onKeyDown={sendMessage}
+              id='first-name'
+              isRequired
+              mt={3}
+            >
+              <Input
+                variant='filled'
+                bgColor='beige'
+                borderRadius='lg'
+                borderWidth='1px'
+                borderColor='orange.200'
+                placeholder='Enter a message...'
+                value={newMessage}
+                onChange={typingHandler}
+              />
+            </FormControl>
           </Box>
         </>
       ) : (
