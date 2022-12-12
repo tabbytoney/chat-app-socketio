@@ -6,6 +6,7 @@ const colors = require('colors');
 const userRoutes = require('./routes/userRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const chatRoutes = require('./routes/chatRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 
 dotenv.config();
 connectDB();
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 // app.use
 app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/message', messageRoutes);
 
 // error handling, errorMiddleware.js
 // if the request doesnt match any of the above, it'll trigger this not found and error handlers
