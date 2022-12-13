@@ -28,6 +28,7 @@ const ProfileModal = ({ user, children }) => {
           display={{ base: 'flex' }}
           icon={<MdRemoveRedEye />}
           onClick={onOpen}
+          bgColor='beige'
         />
       )}
       <Modal size='lg' isCentered isOpen={isOpen} onClose={onClose}>

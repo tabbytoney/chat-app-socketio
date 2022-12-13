@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+
 import { ChatState } from '../Context/ChatProvider';
 import { Box } from '@chakra-ui/react';
 import SideDrawer from '../components/Misc/SideDrawer';
@@ -17,7 +17,8 @@ const ChatPage = () => {
       {user && <SideDrawer />}
       <Box
         display='flex'
-        justifyContent='space-between'
+        // change alignment of the chat placement here
+        justifyContent='center'
         width='100%'
         h='91.5vh'
         p='10px'
