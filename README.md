@@ -1,7 +1,8 @@
 # chat-app-socketio
  A realtime messaging app, using JavaScript, React, ChakraUI, Express, MongoDb, and SocketIO
 
-# Note: .env and database details are not included in the repo, I kept those private to limit access.
+# Note: 
+.env and database details are not included in the repo, I kept those private to limit access. Also I haven't deployed this anywhere publicly.
  
 # to run locally:
 In root app: npm i
